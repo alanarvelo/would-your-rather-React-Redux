@@ -11,7 +11,7 @@ class NavBar extends Component {
   }
   render() {
     const { loggedIn, authedUser, users } = this.props
-    console.log("login on nav: ", loggedIn)
+
     return (
       <Nav fill variant="tabs" defaultActiveKey="/home" className='centered-container'>
         <Nav.Item>

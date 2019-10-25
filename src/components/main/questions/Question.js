@@ -9,7 +9,7 @@ import PostQtnText from './PostQtnText'
 class Question extends Component {
 
   render() {
-    // console.log(this.props)
+
     const { qtn, authedUser, users, url } = this.props
     if (qtn === null) {
       return <p>This question doesn't exist</p>

@@ -8,6 +8,7 @@ import Question from './questions/Question'
 class QuestionPage extends Component {
   render() {
     const { id, url, notFound } = this.props
+
     if (notFound) {
       return <p>This question does not exists.</p>
     }

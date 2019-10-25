@@ -2,19 +2,23 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Card, DropdownButton, Dropdown } from 'react-bootstrap'
 import { setAuthedUser } from '../../actions/authedUser'
-import { Redirect } from 'react-router-dom'
 
 
 class Login extends Component {
+
   handleSelection = (evt) => {
-    const { dispatch } = this.props
+    const { dispatch, prevUrl } = this.props
     dispatch(setAuthedUser(evt.target.name))
-  }
-  render() {
-    const { users, loggedIn } = this.props
-    if (loggedIn) {
-      return <Redirect to='/' />
+    if (prevUrl !== null && prevUrl !== undefined && prevUrl.prevUrl) {
+      this.props.history.push(prevUrl.prevUrl)
+    } else { 
+      this.props.history.push(`/`)
     }
+  }
+
+  render() {
+    const { users } = this.props
+    
     return (
       <div className='centered-container'>
         <Card style={{ width: '48rem'}} >
@@ -38,11 +42,13 @@ class Login extends Component {
 
 function mapStateToProps ({ users, authedUser }, props) {
   const url = props.location.pathname
+  const prevUrl = props.location.state ? props.location.state : null
   return {
     loggedIn: authedUser !== null,
     users,
     authedUser,
-    url
+    url,
+    prevUrl
   }
 }
 

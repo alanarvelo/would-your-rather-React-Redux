@@ -3,7 +3,7 @@ import '../App.css';
 import { handleInitialData } from '../actions/shared'
 import { connect } from 'react-redux'
 import LoadingBar from 'react-redux-loading'
-import { BrowserRouter as Router, Route, Redirect } from 'react-router-dom'
+import { BrowserRouter as Router, Route, Redirect, Switch, withRouter } from 'react-router-dom'
 
 import Dashboard from './main/Dashboard'
 import QuestionPage from './main/QuestionPage'
@@ -11,41 +11,46 @@ import NavBar from './Nav'
 import NewQuestion from './main/questions/NewQuestion'
 import Leaderboard from './main/Leaderboard'
 import Login from './main/Login'
+import NotFound from './main/NotFound'
 
 class App extends Component {
   componentDidMount() {
     this.props.dispatch(handleInitialData())
   }
   render() {
-    // console.log(this.props.loggedIn)
-    console.log("passed through App")
+    const { url } = this.props
+    
     return (
       <Router>
-        
         <div className="container">
           <LoadingBar />
           <NavBar />
-          {this.props.loggedIn
-            ? <div>
-                <Route path='/' exact component={Dashboard} />
-                <Route path='/questions/:id' exact component={QuestionPage} />
-                <Route path='/add' component={NewQuestion} />
-                <Route path='/leaderboard' component={Leaderboard} />
-              </div>
-            : <Redirect to='/login' exact/>
-          }
+
+              {this.props.loggedIn
+                ? <div>
+                    <Switch>
+                      <Route path='/' exact component={Dashboard} />
+                      <Route path='/questions/:id' component={QuestionPage} />
+                      <Route path='/add' component={NewQuestion} />
+                      <Route path='/leaderboard' component={Leaderboard} />
+                      <Route component={NotFound} />
+                    </Switch>
+                  </div>
+                : <Redirect to={{pathname: '/login', state: { prevUrl: url } }} />
+              }
           <Route path='/login' component={Login} />
-          
         </div>
       </Router>
     )
   }
 }
 
-function mapStateToProps ({ authedUser }) {
+function mapStateToProps ({ authedUser }, props) {
+  const url = props.location.pathname
   return {
-    loggedIn: authedUser !== null
+    loggedIn: authedUser !== null,
+    url: url
   }
 }
 
-export default connect(mapStateToProps)(App);
+export default withRouter(connect(mapStateToProps)(App));
