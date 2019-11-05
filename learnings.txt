@@ -1,0 +1,25 @@
+L7 React ND
+Coding Order (After planning)
+	1. Create Actions/Action Creators to set data in the Store. Some Action Creators are async (make API calls) 			thus need the thunk structure to work.
+	2. Create Reducers to set data in the store. Reducers use the switch case logic, an index.js file combines 			them with combineReducers({}) from redux, and exports them together. The store gets initialized by 			setting the first argument of each reducer to be a store variable with a default value.
+	3. In Index.js we create the store, passing it the root reducer, and wrap the App component around the 				Provider component from the react-redux package (this components allows for any other component to 		access the complete store via the _connect_ function.
+	4. Middleware (thunk) must be created so that async action creators can indeed return functions instead of 			JS objects. It is passed to the apply middleware as the first argument (first middleware). It basically 			determines if the “action” passed from the action creator is an object or a function. If it is a function is 			calls it and that function should return the action object.
+	5. All the above is done with the use case of loading the home page initial data. 
+	6. mapStateToProps, the first function passed to connect (from ‘react-redux’) takes the store as the first 			argument and the props passed to the component as the second argument. One typically deconstructs 		both.
+	7. You have 2 data persistence hubs, the DB (through API) and the Redux Store.
+	8. If you want to have access to UI data, say the authedUser, in a reducer, you’ll need to pass that from a the 		UI component, to the Action/Action Creator, to the Reducer.
+	9. Being connected ( a Component having the connect functioned at the bottom) gives it the dispatch 				function as a prop.
+	10. When you are updating the UI based on the state of your component, you need a controlled component 			(which holds its state locally? i.e. not in the store). Whatever is less awkward, if the state does not need 		to be used/seen by other components, have it live locally in that component and uses React (setState) 			instead of Redux (dispatch).
+	11. API calls to retrieve or add/update data are made from async action creators.
+	12. When making components, create the UI and their own state and console.log them. Verify they work and 		then update the Store or DB (API calls) as needed.
+	13. In the async action creator, the second argument of the return function (after dispatch) can be getState. 		This can help you get information from the Store that is not accessible from the Component’s UI 				(authorUser was one instance).
+	14. Order of dev for a component. Components UI (local state, event handlers), Action Creators (first simple 			then async — within async first API call then store update, unless optimistic), Reducer (for that action), 		Connect components (mapStateToProp if component needs data from Store — call Action Creator from 		component)
+	15. We communicate with the store by dispatching actions. dispatch is a method on the store. That means 			that the New Tweet Component needs to be connect()ed to Redux. Once a component is connected to 			the store, it will have dispatch on its props.
+
+	16. The handleInitialData (async/thunk/ action creator) function in /actions/shared.js serves to import data 			from the database (via api calls) to the store.
+	17. Action objects contain their action.type and the data necessary for the action to be performed. The 				reducer looks at the action.type and then changes the store’s state by doing X with the data.
+
+Todo: 
+- Mark not say, which option the user voted for
+- Show the authorUser in the NAvBar
+- Block 404 for poll ids or pages that do not exist
